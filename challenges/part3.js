@@ -1,38 +1,39 @@
-let myName = undefined;
+let myName = '';
 let isFocus = false;
 
 let jsInput;
 let jsDiv;
+let vDOM;
 
-// function dataToView() {
-//   jsInput.value = myName === undefined ? '' : myName;
-//   jsDiv.textContent = myName;
-// }
-
-function handleInput() {
-  myName = jsInput.value;
-  component();
+function createDOM() {
+  return [
+    [
+      'input',
+      myName,
+      function handle() {
+        myName = jsInput.value;
+      }
+    ],
+    ['div', `Hi, ${myName}`]
+  ];
 }
 
-function handleClick() {
-  myName = '';
-  component();
+function convert(node) {
+  const element = document.createElement(node[0]);
+  element.textContent = node[1];
+  element.value = node[1];
+  element.oninput = node[2];
+
+  return element;
 }
 
-function component() {
+function updateDOM() {
   document.activeElement === jsInput ? (isFocus = true) : (isFocus = false);
-  
-  jsInput = document.createElement('input');
-  jsDiv = document.createElement('div');
-  jsInput.oninput = handleInput;
-  jsInput.onclick = handleClick;
-
-  jsInput.value = myName === undefined ? '' : myName;
-  jsDiv.textContent = myName;
-
-  document.body.replaceChildren(...[jsInput, jsDiv]);
-
+  vDOM = createDOM();
+  jsInput = convert(vDOM[0]);
+  jsDiv = convert(vDOM[1]);
+  document.body.replaceChildren(jsInput, jsDiv);
   if (isFocus) jsInput.focus();
 }
 
-setInterval(component, 15);
+setInterval(updateDOM, 15);
