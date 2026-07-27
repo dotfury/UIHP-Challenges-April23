@@ -3,6 +3,7 @@ let isFocus = false;
 
 let jsInput;
 let jsDiv;
+let otherDiv;
 let vDOM;
 
 function createDOM() {
@@ -14,11 +15,19 @@ function createDOM() {
         myName = jsInput.value;
       }
     ],
-    ['div', `Hi, ${myName}`]
+    [['div', `Hi, ${myName}`], ['div', `Hello, darling ${myName}`]]
   ];
 }
 
+function isNested(arr) {
+  return arr.some(Array.isArray);
+}
+
 function convert(node) {
+  if (isNested(node)) {
+    return node.map(convert);
+  }
+
   const element = document.createElement(node[0]);
   element.textContent = node[1];
   element.value = node[1];
@@ -30,10 +39,15 @@ function convert(node) {
 function updateDOM() {
   document.activeElement === jsInput ? (isFocus = true) : (isFocus = false);
   vDOM = createDOM();
-  jsInput = convert(vDOM[0]);
-  jsDiv = convert(vDOM[1]);
-  document.body.replaceChildren(jsInput, jsDiv);
+
+  const elements = vDOM.map(convert).flat();
+
+  jsInput = elements[0];
+  jsDiv = elements[1];
+  otherDiv = elements[2];
+  document.body.replaceChildren(jsInput, jsDiv, otherDiv);
   if (isFocus) jsInput.focus();
 }
 
 setInterval(updateDOM, 15);
+
