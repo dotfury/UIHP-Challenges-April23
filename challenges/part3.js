@@ -37,16 +37,16 @@ function convert(node) {
 }
 
 function updateDOM() {
-  document.activeElement === jsInput ? (isFocus = true) : (isFocus = false);
+  // document.activeElement === jsInput ? (isFocus = true) : (isFocus = false);
   vDOM = createDOM();
 
   const elements = vDOM.map(convert).flat();
 
-  jsInput = elements[0];
-  jsDiv = elements[1];
-  otherDiv = elements[2];
-  document.body.replaceChildren(jsInput, jsDiv, otherDiv);
-  if (isFocus) jsInput.focus();
+  // jsInput = elements[0];
+  // jsDiv = elements[1];
+  // otherDiv = elements[2];
+  document.body.replaceChildren(...elements);
+  // if (isFocus) jsInput.focus();
 }
 
 setInterval(updateDOM, 15);
